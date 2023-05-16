@@ -1,6 +1,6 @@
 package _01_gettingStart;
 
-public class _01_codeIssuesVsDesignIssues {
+public class _01_What_is_DesignPatterns {
     // 성공적인 소프트웨어를 만드는 여정.성공적인 소프트웨어를 만드는 과정에서 여러 엔지니어가
     // 메모리 누수, 객체 생성, 클래스 구조, 구성 요소 통신, 시스템 배선 등과 관련하여 일반적으로 발생하는 설계 문제에 직면했습니다
 
