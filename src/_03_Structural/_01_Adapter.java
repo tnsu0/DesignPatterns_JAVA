@@ -18,7 +18,7 @@ package _03_Structural;
 * */
 
 //기존에 보유하고있는 알고리즘
-class Math {
+class MathCantExtends {
     static double twoTime(double num){
         return num*2;
     }
@@ -31,18 +31,19 @@ class Math {
 //2. Float 인자값을 받아서 수의 절반을 Float 타입으로 반환하는 harfOf 메서드를 구현
 //3. 구현 객체명은 Adapter로 명명
 interface Adapter {
-    public Float twiceOf(Float f);
-    public Float halfOf(Float f);
+    Float twiceOf(Float f);
+    Float halfOf(Float f);
 }
-class AdapterImpl implements Adapter{
 
+//Adapter를 이용하여 범용성 높게 만들 수 있음
+class AdapterImpl extends MathCantExtends implements Adapter{
     @Override
     public Float twiceOf(Float f) {
-        return (float) Math.twoTime(f.doubleValue());
+        return (float) MathCantExtends.twoTime(f.doubleValue());
     }
 
     @Override
     public Float halfOf(Float f) {
-        return (float) Math.half(f.doubleValue());
+        return (float) MathCantExtends.half(f.doubleValue());
     }
 }

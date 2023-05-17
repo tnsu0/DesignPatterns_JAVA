@@ -84,7 +84,7 @@ class Human implements HumanTM{
     private int strength;
     private int agility;
     private int intelligence;
-    Human(){
+    public Human(){
         this.strength = 1;
         this.agility = 1;
         this.intelligence = 4;
@@ -156,7 +156,7 @@ class Human implements HumanTM{
 
 class Citizen extends Human implements HumanTM{
 
-    Citizen(){
+    public Citizen(){
         setStrength(1);
         setAgility(2);
         setIntelligence(5);
