@@ -19,6 +19,16 @@ package _04_Behavioral;
 //일정한 프로세스 를 가진 요구사항을 템플릿 메소드 패턴을 이용하여 구현할 수 있습니다.
 //ex: Spring Security의 인증및 인가과정, 애노테이션 프로세서의 라운드구조, 로직의 완성까지의 로직이 순차적인 일정한 단계가 있는 경우 등.
 
+class MainTM {
+    public static void main(String[] args) {
+        Citizen h1 = new Citizen();
+        AbstSoldierConscriptionHelper helper = new SoldierConscriptionHelperImpl();
+        Soldier soldier = helper.conscription();
+        soldier.attack();
+        soldier.defense();
+    }
+}
+
 /**요구사항 : 시민들을 징집해서 병사로 만들어 주세요
  1.
  시민들 중 마린이 될 수 있는 조건의 시민 징집합니다.
@@ -33,17 +43,52 @@ package _04_Behavioral;
  장비를 보급합니다.
  supplyEquipment(Solder soldier);**/
 
-class Citizen {
+interface HumanTM{
+    void myNoti();
+}
+class Human implements HumanTM{
+    private WeaponTM weapon;
+    public ArmorTM getArmor() {
+        return armor;
+    }
+    private ArmorTM armor;
+    public String getNoti() {
+        return noti;
+    }
+    public void setNoti(String noti) {
+        this.noti = noti;
+    }
+    public WeaponTM getWeapon() {
+        return weapon;
+    }
+    public int getStrength() {
+        return strength;
+    }
+    public void setStrength(int strength) {
+        this.strength = strength;
+    }
+    private String noti;
+    public int getAgility() {
+        return agility;
+    }
+    public void setAgility(int agility) {
+        this.agility = agility;
+    }
+    public int getIntelligence() {
+        return intelligence;
+    }
+
+    public void setIntelligence(int intelligence) {
+        this.intelligence = intelligence;
+    }
     private int strength;
     private int agility;
     private int intelligence;
-
-    Citizen(){
+    Human(){
         this.strength = 1;
         this.agility = 1;
-        this.intelligence = 5;
+        this.intelligence = 4;
     }
-
 
     public void updateStrength(int i) {
         this.strength += i;
@@ -56,17 +101,22 @@ class Citizen {
     public void updateIntelligence(int i){
         this.intelligence += i;
     }
-}
 
-class Soldier extends Citizen{
-
-    private WeaponTM weapon;
-    private ArmorTM armor;
+    @Override
+    public void myNoti() {
+        if(getNoti() == null) {
+            System.out.println("신원 조회가 안됩니다.");
+        } if (getNoti().equals("Citizen")) {
+            System.out.println("시민입니다.");
+        } else if (getNoti().equals("Soldier")) {
+            System.out.println("군인입니다.");
+        }
+    }
 
     public void setWeapon(WeaponTM weapon) {
         this.weapon = weapon;
-        if(weapon == null){
-            System.out.println("장비 미보급");
+        if(getWeapon() == null){
+            System.out.println("무기 미보급");
         }
         else {
             weapon.getEq();
@@ -77,12 +127,49 @@ class Soldier extends Citizen{
     public void setArmor(ArmorTM armor) {
         this.armor = armor;
         if(armor == null){
-            System.out.println("장비 미보급");
+            System.out.println("방어구 미보급");
         }
         else {
             armor.getEq();
             armor.myArmor();
         }
+    }
+
+    public void attack() {
+        if(!getWeapon().equals(null)){
+            getWeapon().myWeapon();
+            System.out.println("으로 공격합니다.");
+        }
+        else {
+            System.out.println("맨손으로 공격합니다.");
+        }
+    }
+    public void defense() {
+        if(getArmor() != null){
+            getArmor().myArmor();
+            System.out.println("으로 방어합니다");
+        } else{
+            System.out.println("맨몸으로 막습니다.");
+        }
+    }
+}
+
+class Citizen extends Human implements HumanTM{
+
+    Citizen(){
+        setStrength(1);
+        setAgility(2);
+        setIntelligence(5);
+        setNoti("citizen");
+    }
+
+}
+
+class Soldier extends Citizen{
+
+    public Soldier(Citizen citizen) {
+        super();
+        setNoti("Soldier");
     }
 }
 
@@ -109,7 +196,6 @@ class Gun implements WeaponTM{
 interface ArmorTM extends eqTemplateMethod{
     void myArmor();
 }
-
 class steelArmor implements ArmorTM{
     @Override
     public void getEq() {
@@ -135,40 +221,43 @@ abstract class AbstSoldierConscriptionHelper {
     // 보직을 시민에서 병사로 변경
     protected abstract Soldier changeOfPosition(Citizen citizen);
 
-    Soldier conscription() {
+    protected abstract Soldier conscription();
+}
+class SoldierConscriptionHelperImpl extends AbstSoldierConscriptionHelper {
+
+    @Override
+    protected Citizen conscriptionCitizen() {
+        System.out.println("징집!");
+        return new Citizen();
+    }
+
+    @Override
+    protected void training(Citizen citizen) {
+        citizen.updateStrength(5);
+        citizen.updateAgility(4);
+        citizen.updateIntelligence(-3);
+        System.out.println("병사훈련!");
+    }
+
+    @Override
+    protected void supplyEquipment(Soldier soldier) {
+        soldier.setWeapon(new Gun());
+        soldier.setArmor(new steelArmor());
+        System.out.println("장비 보급 완료");
+    }
+
+    @Override
+    protected Soldier changeOfPosition(Citizen citizen) {
+        System.out.println("시민 > 병사 변경");
+        return new Soldier(citizen);
+    }
+
+    @Override
+    protected Soldier conscription() {
         Citizen citizen = conscriptionCitizen();
         training(citizen);
         Soldier soldier = changeOfPosition(citizen);
         supplyEquipment(soldier);
         return soldier;
     }
-
-    class SoldierConscriptionHelperImpl extends AbstSoldierConscriptionHelper {
-
-        @Override
-        protected Citizen conscriptionCitizen() {
-            System.out.println("징집!");
-            return new Citizen();
-        }
-
-        @Override
-        protected void training(Citizen citizen) {
-            citizen.updateStrength(5);
-            citizen.updateAgility(4);
-            citizen.updateIntelligence(-3);
-            System.out.println("병사훈련!");
-        }
-
-        @Override
-        protected void supplyEquipment(Soldier soldier) {
-            soldier.setWeapon(new Gun());
-            soldier.setArmor(new steelAmor());
-        }
-
-        @Override
-        protected Soldier changeOfPosition(Citizen citizen) {
-            return null;
-        }
-    }
-
 }

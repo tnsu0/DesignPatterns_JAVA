@@ -16,7 +16,7 @@ package _04_Behavioral;
 게임을 예로들면 캐릭터는 공격이라는 작업을 수행함에 있어 무기를 상황에 맞게 선택해서 공격을 위임할 수 있습니다.
 Weapon 이라는 인터페이스를 상속해서 같은 기능(책임)만 수행할 수 있다면 얼마든지 다른 무기도 추가할 수 있습니다.
 */
-class Main {
+class MainSy {
     public static void main(String[] args) {
         GameCharacter character = new GameCharacter();
         character.attack();
